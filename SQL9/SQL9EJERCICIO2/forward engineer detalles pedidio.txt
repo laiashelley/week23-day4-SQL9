@@ -1,0 +1,101 @@
+-- MySQL Workbench Forward Engineering
+
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
+
+-- -----------------------------------------------------
+-- Schema mydb
+-- -----------------------------------------------------
+-- -----------------------------------------------------
+-- Schema podcast
+-- -----------------------------------------------------
+
+-- -----------------------------------------------------
+-- Schema podcast
+-- -----------------------------------------------------
+CREATE SCHEMA IF NOT EXISTS `podcast` DEFAULT CHARACTER SET utf8 ;
+USE `podcast` ;
+
+-- -----------------------------------------------------
+-- Table `podcast`.`detalles_del_pedido`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `podcast`.`detalles_del_pedido` (
+  `iddetalles_del_pedido` INT(11) NOT NULL AUTO_INCREMENT,
+  `peso_archivo` INT(11) NOT NULL,
+  `duración_episodio` TIME NOT NULL,
+  `enlace_descarga` VARCHAR(45) NOT NULL,
+  `formato_archivo` VARCHAR(45) NOT NULL,
+  `estado_pedido` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`iddetalles_del_pedido`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `podcast`.`podcast`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `podcast`.`podcast` (
+  `id_podcast` INT(11) NOT NULL AUTO_INCREMENT,
+  `nombre_podcast` VARCHAR(45) NOT NULL,
+  `tema_podcast` VARCHAR(45) NOT NULL,
+  `fecha_carga` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  `duracion_podcast` TIME NOT NULL,
+  `detalles_del_pedido_iddetalles_del_pedido` INT(11) NOT NULL,
+  PRIMARY KEY (`id_podcast`, `detalles_del_pedido_iddetalles_del_pedido`),
+  UNIQUE INDEX `nombre_podcast_UNIQUE` (`nombre_podcast` ASC) ,
+  INDEX `fk_podcast_detalles_del_pedido1_idx` (`detalles_del_pedido_iddetalles_del_pedido` ASC) ,
+  CONSTRAINT `fk_podcast_detalles_del_pedido1`
+    FOREIGN KEY (`detalles_del_pedido_iddetalles_del_pedido`)
+    REFERENCES `podcast`.`detalles_del_pedido` (`iddetalles_del_pedido`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+AUTO_INCREMENT = 14
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `podcast`.`usuario`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `podcast`.`usuario` (
+  `id_usuario` INT(11) NOT NULL AUTO_INCREMENT,
+  `nombre_usuario` VARCHAR(45) NOT NULL,
+  `email_usuario` VARCHAR(45) NOT NULL,
+  `fecha_alta` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  PRIMARY KEY (`id_usuario`),
+  UNIQUE INDEX `email_usuario_UNIQUE` (`email_usuario` ASC) )
+ENGINE = InnoDB
+AUTO_INCREMENT = 14
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `podcast`.`descargas`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `podcast`.`descargas` (
+  `id_descargas` INT(11) NOT NULL AUTO_INCREMENT,
+  `fecha_descarga` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  `usuario_id_usuario` INT(11) NOT NULL,
+  `podcast_id_podcast` INT(11) NOT NULL,
+  PRIMARY KEY (`id_descargas`),
+  INDEX `fk_descargas_usuario_idx` (`usuario_id_usuario` ASC) ,
+  INDEX `fk_descargas_podcast1_idx` (`podcast_id_podcast` ASC) ,
+  CONSTRAINT `fk_descargas_podcast1`
+    FOREIGN KEY (`podcast_id_podcast`)
+    REFERENCES `podcast`.`podcast` (`id_podcast`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_descargas_usuario`
+    FOREIGN KEY (`usuario_id_usuario`)
+    REFERENCES `podcast`.`usuario` (`id_usuario`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+AUTO_INCREMENT = 25
+DEFAULT CHARACTER SET = utf8;
+
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;

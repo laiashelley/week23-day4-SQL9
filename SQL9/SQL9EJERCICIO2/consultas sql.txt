@@ -1,0 +1,15 @@
+SELECT * FROM podcast.detalles_del_pedido;
+
+INSERT INTO detalles_del_pedido (peso_archivo, duración_episodio, enlace_descarga, formato_archivo, estado_pedido)
+VALUES (50.25, '01:30:00', 'http://example.com/download1', 'MP3', 'Completado');
+
+INSERT INTO detalles_del_pedido (peso_archivo, duración_episodio, enlace_descarga, formato_archivo, estado_pedido)
+VALUES (100.5, '01:40:00', 'http://example.com/download2', 'MP3', 'Incompleto');
+
+INSERT INTO detalles_del_pedido (peso_archivo, duración_episodio, enlace_descarga, formato_archivo, estado_pedido)
+VALUES (5, '01:20:00', 'http://example.com/download3', 'MP3', 'Error');
+
+SELECT podcast.id_podcast, podcast.fecha_carga, 
+       detalles_del_pedido.peso_archivo,  detalles_del_pedido.duración_episodio,  detalles_del_pedido.enlace_descarga,  detalles_del_pedido.formato_archivo,  detalles_del_pedido.estado_pedido
+FROM podcast 
+INNER JOIN detalles_del_pedido ON podcast.id_podcast = detalles_del_pedido.iddetalles_del_pedido;
